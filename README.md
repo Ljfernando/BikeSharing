@@ -21,7 +21,8 @@ This was done when analyzing only on year’s worth of data. The addition, loss 
 
 ModelTesting.R
 This file contains three rounds worth of modeling. Only run the Round 3 Model Testing script (starting on line 280) with the SF_daily_bikeshare_dataset.RData dataset.
-Linear Regression modeling is used first. Cross validation of linear models is used to gain a more accurate MSE. In rounds 2 and 3, regression trees and ensembles are then used. A single tree is used first followed by bagging trees and finally random forests.
+Linear Regression modeling is used first. Cross validation of linear models is used to gain a more accurate MSE. In rounds 2 and 3, regression trees and ensembles are then used. 
+A single tree is used first followed by bagging trees and finally random forests.
 Feature selection script is included but not utilized in the testing of models as they gave a higher MSE than if using all variables.
 Results are plotted to assess the MSE of different models. 
 
