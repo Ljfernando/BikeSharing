@@ -16,12 +16,7 @@ This file provides insight on the content of the SF_daily_bikeshare dataset.
 On line 2, provide the path for your SF_daily_bikeshare workspace data.
 Any analysis of distances or speed will not work if using all three years of data.
 This was done when analyzing only on year’s worth of data. The addition, loss and change of stations make it difficult to analyze distance or speed of trips.
-This figure points out the difference in activity between customers and subscribers.
-```{r}
-library(png)
-img <- readPNG(system.file("img", "Rplots/Subs&CustActivity.png", package="png"))
-grid::grid.raster(img)
-```
+
 
 ModelTesting.R
 This file contains three rounds worth of modeling. Only run the Round 3 Model Testing script (starting on line 280) with the SF_daily_bikeshare_dataset.RData dataset.
