@@ -16,9 +16,16 @@ This file provides insight on the content of the SF_daily_bikeshare dataset.
 On line 2, provide the path for your SF_daily_bikeshare workspace data.
 Any analysis of distances or speed will not work if using all three years of data.
 This was done when analyzing only on year’s worth of data. The addition, loss and change of stations make it difficult to analyze distance or speed of trips.
+This figure points out the difference in activity between customers and subscribers.
+```{r}
+library(png)
+img <- readPNG(system.file("img", "Rplots/Subs&CustActivity.png", package="png"))
+grid::grid.raster(img)
+```
 
 ModelTesting.R
 This file contains three rounds worth of modeling. Only run the Round 3 Model Testing script (starting on line 280) with the SF_daily_bikeshare_dataset.RData dataset.
+Linear Regression modeling is used first. Cross validation of linear models is used to gain a more accurate MSE. In rounds 2 and 3, regression trees and ensembles are then used. A single tree is used first followed by bagging trees and finally random forests.
 Feature selection script is included but not utilized in the testing of models as they gave a higher MSE than if using all variables.
 Results are plotted to assess the MSE of different models. 
 
@@ -56,3 +63,7 @@ https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=PET&s=EMM_EPM0_PTE_Y05SF_DP
 Packages used: tree, boot, randomForest, leaps, (optional: geosphere, measurements)
 
 Authors: Carlos Cortez-Aguilera, Lance Fernando
+
+```{r}
+
+```
