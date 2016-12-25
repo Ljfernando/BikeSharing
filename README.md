@@ -60,6 +60,5 @@ https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=PET&s=EMM_EPM0_PTE_Y05SF_DP
 
 **Packages used:** tree, boot, randomForest, leaps, (optional: geosphere, measurements)
 
-Authors: Carlos Cortez-Aguilera, Lance Fernando
+**Authors: Carlos Cortez-Aguilera, Lance Fernando**
 
-![alt text](https://github.com/Ljfernando/BikeSharing/tree/master/RPlots “CV Plots”)
