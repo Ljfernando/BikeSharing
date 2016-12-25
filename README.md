@@ -1,4 +1,4 @@
-This is the Final Project for CS451 Data Mining at The University of San Francisco. This project hopes to predict the amount of bikes rented in a single day through the San Francisco Bike Share program. The success of the Bay Area Bike Share Program will aid in San Francisco’s goal in reducing CO2 emissions. Supervised learning methods such as Linear Regression, Cross Validation, and Tree ensemble methods are used to create statistical models. Mean Squared Error is the metric used to assess these models. 
+This is the Final Project for CS451 Data Mining at The University of San Francisco. This project predicts the number of bikes rented in a single day through the San Francisco Bike Share program. The success of the Bay Area Bike Share Program will aid in San Francisco’s goal in reducing CO2 emissions. Supervised learning methods such as Linear Regression, Cross Validation, and Tree ensemble methods are used to create statistical models. Mean Squared Error is the metric used to assess these models. 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Files included:
@@ -59,6 +59,3 @@ Packages used: tree, boot, randomForest, leaps, (optional: geosphere, measuremen
 
 Authors: Carlos Cortez-Aguilera, Lance Fernando
 
-```{r}
-
-```
