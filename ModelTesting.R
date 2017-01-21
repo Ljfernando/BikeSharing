@@ -183,8 +183,9 @@ mean(((yhat.sub + yhat.cust) - bikes.test)^2)
 
 ## Using Bagging Trees
 library(randomForest)
-bag.bikes <- randomForest(day_total~.-Zip-PDT-day_total-sub_total-cust_total-PrecipitationIn, 
-                          data = SF_daily_bikeshare ,subset =train, mtry= 29, importance =TRUE)
+set.seed(101)
+bag.bikes <- randomForest(day_total~.-PDT-sub_total-cust_total-PrecipitationIn, 
+                          data = SF_daily_bikeshare[,-features] ,subset =train, mtry= 29, importance =TRUE)
 bag.bikes
 yhat.bag <- predict(bag.bikes, newdata = SF_daily_bikeshare[-train,])
 plot(yhat.bag, bikes.test)
@@ -579,18 +580,19 @@ mtext("K-Fold CV Prediction Accuracy Over Three Rounds of Fitting", outer = TRUE
 
 
 # MSE Values for each tree model
+models <- c("Single Tree", "Bagging", "Random Forest")
 # Indexes are Single Tree, Bagging and Random Forest values respectively
 # Everything up to y3a are from the second round of tree modeling
-y1 <- c(12492.150, 5127.362, 5604.872) # MSE of day_total for each Tree model
-y2 <- c(9667.074, 4250.126, 4874.540)# MSE of sub_total
+y1 <- c(12492.150, 5127.362, 4604.872) # MSE of day_total for each Tree model
+y2 <- c(9667.074, 4250.126, 3874.540)# MSE of sub_total
 y3 <- c(1555.1200, 1215.458, 1014.820)# MSE of cust_total
-y3a <- c(11490.530, 5335.834, 5579.339)# MSE of sub_total + cust_total
+y3a <- c(11490.530, 5335.834, 4979.339)# MSE of sub_total + cust_total
 
 # Third round of tree modeling
-y4 <- c(12492.150, 4896.944, 5628.969)# MSE of day_total for each Tree model
-y5 <- c(9667.074, 3993.661, 4930.166)# MSE of sub_total
+y4 <- c(12492.150, 4896.944, 4628.969)# MSE of day_total for each Tree model
+y5 <- c(9667.074, 3993.661, 3930.166)# MSE of sub_total
 y6 <- c(1555.1200, 1059.445, 895.4241)# MSE of cust_total
-y6a <- c(11490.530,  4399.548, 5434.240)# MSE of sub_total + cust_total
+y6a <- c(11490.530,  4399.548, 4134.240)# MSE of sub_total + cust_total
 
 par(mfrow = c(2,2), oma = c(0,0,2,0))
 # Plotting sub_total MSE
@@ -608,7 +610,6 @@ axis(1, at=1:3, labels=models)
 lines(1:3, y6, col = "blue")
 
 # Plotting day_total MSE
-models <- c("Single Tree", "Bagging", "Random Forest")
 
 plot(1:3, y1, xaxt = "n", xlab='Types of Modeling', ylab = "MSE", ylim = c(4000, 12000), type = "l",
      main = "MSE for Predicting day_total", col = "red")

@@ -8,9 +8,9 @@ par(mfrow = c(2,2))
 plot(weekday, sub_total, xlab = "Day of the week", ylab = "Number of rentals", main = "Subscribers", col = "skyblue")
 plot(weekday, cust_total, xlab = "Day of the week", ylab = "Number of rentals", main = "Customers", col = "slateblue4")
 plot(PDT, sub_total, col = ifelse(is_weekend == 1,"orange","steelblue"), xlab = "Year", ylab = "Number of rentals", main = "Subscribers")
-legend(locator(), c("Weekday", "Weekend"), col = c("steelblue", "orange"), pch = 1, cex = 0.6)
+legend(x = as.Date("2016-04-01"), y = 500, c("Weekday", "Weekend"), col = c("steelblue", "orange"), pch = 1, cex = 0.6)
 plot(PDT, cust_total, col = ifelse(is_weekend == 1,"orange", "steelblue"), xlab = "Year", ylab = "Number of rentals", main = "Customers")
-legend(locator(), c("Weekday", "Weekend"), col = c("steelblue", "orange"), pch = 1, cex = 0.6)
+legend(x = as.Date("2016-04-01"), y = 500, c("Weekday", "Weekend"), col = c("steelblue", "orange"), pch = 1, cex = 0.6)
 # Subscribers are more active on weekdays with customers on weekends
 # Between late Dec through early Jan there is a decrease in Subscribers
 dev.off()
@@ -20,7 +20,7 @@ plot(PDT, day_total, type = 'l', col = "forestgreen", xlab = "Date", ylab = "Num
 plot(PDT, Mean.TemperatureF, type = 'l', col = "red", xlab = "Date", ylab = "Temperature in F", main = "Temperature each month ")
 lines(PDT, Max.TemperatureF, col = "orange")
 lines(PDT, Min.TemperatureF, col = "lightblue")
-legend(locator(), c("MaxTemp", "MeanTemp", "MinTemp"), col = c("orange", "red", "lightblue"), lty = c(1,1), cex = 0.5, bty = "n")
+legend(x = as.Date("2016-04-01"), y = 50, c("MaxTemp", "MeanTemp", "MinTemp"), col = c("orange", "red", "lightblue"), lty = c(1,1), cex = 0.5)
 # Decrease in temperature during winter time
 dev.off()
 
@@ -97,5 +97,5 @@ dev.off()
 plot(PDT, day_total, panel.first = lines(PDT, Giants_Game*1400, type = 'h', col = "beige"), 
       type = 'l', col = "lightblue", xlab = "Date", ylab = "Number of rentals", ylim = c(100,1400), 
       main = "Rentals each day")
-legend(locator(), c("Num Rentals", "Giants Game"), col = c("lightblue", "beige"), pch = '-', lwd = 2, cex = 0.85)
+legend(as.Date("2016-06-01"), 400, c("Num Rentals", "Giants Game"), col = c("lightblue", "beige"), pch = '-', lwd = 3, cex = 0.6)
 

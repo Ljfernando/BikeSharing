@@ -1,32 +1,32 @@
 ## Importing data
 
 # WARNING : Before importing trip data, ensure all are sorted in ascending order by date
-trip_data_201508 = read.csv("/Users/lancefernando/Desktop/DataMining/DataSets/BayAreaBikeShareData/babs_open_data_year_2/201508_trip_data.csv", na.strings = "NA")
+trip_data_201508 = read.csv("/Users/lancefernando/Desktop/DataMining/RProjects/BayAreaBikeShareData/babs_open_data_year_2/201508_trip_data.csv", na.strings = "NA")
 trip_data_201508 = na.omit(trip_data_201508)
-weather_data_201508 = read.csv("/Users/lancefernando/Desktop/DataMining/DataSets/BayAreaBikeShareData/babs_open_data_year_2/201508_weather_data.csv", na.strings = "NA")
+weather_data_201508 = read.csv("/Users/lancefernando/Desktop/DataMining/RProjects/BayAreaBikeShareData/babs_open_data_year_2/201508_weather_data.csv", na.strings = "NA")
 weather_data_201508 = na.omit(weather_data_201508)
-station_data_201508 = read.csv("/Users/lancefernando/Desktop/DataMining/DataSets/BayAreaBikeShareData/babs_open_data_year_2/201508_station_data.csv", na.strings = "NA")
+station_data_201508 = read.csv("/Users/lancefernando/Desktop/DataMining/RProjects/BayAreaBikeShareData/babs_open_data_year_2/201508_station_data.csv", na.strings = "NA")
 station_data_201508 = na.omit(station_data_201508)
 
-trip_data_201608 = read.csv("/Users/lancefernando/Desktop/DataMining/DataSets/BayAreaBikeShareData/babs_open_data_year_3/201608_trip_data.csv", na.strings = "NA")
+trip_data_201608 = read.csv("/Users/lancefernando/Desktop/DataMining/RProjects/BayAreaBikeShareData/babs_open_data_year_3/201608_trip_data.csv", na.strings = "NA")
 trip_data_201608 = na.omit(trip_data_201608)
-weather_data_201608 = read.csv("/Users/lancefernando/Desktop/DataMining/DataSets/BayAreaBikeShareData/babs_open_data_year_3/201608_weather_data.csv", na.strings = "NA")
+weather_data_201608 = read.csv("/Users/lancefernando/Desktop/DataMining/RProjects/BayAreaBikeShareData/babs_open_data_year_3/201608_weather_data.csv", na.strings = "NA")
 weather_data_201608 = na.omit(weather_data_201608)
-station_data_201608 = read.csv("/Users/lancefernando/Desktop/DataMining/DataSets/BayAreaBikeShareData/babs_open_data_year_3/201608_station_data.csv", na.strings = "NA")
+station_data_201608 = read.csv("/Users/lancefernando/Desktop/DataMining/RProjects/BayAreaBikeShareData/babs_open_data_year_3/201608_station_data.csv", na.strings = "NA")
 station_data_201608 = na.omit(station_data_201608)
 
-trip_data_201402 = read.csv("/Users/lancefernando/Desktop/DataMining/DataSets/BayAreaBikeShareData/babs_open_data_year_1/201402_babs_open_data/201402_trip_data.csv", na.strings = "NA")
+trip_data_201402 = read.csv("/Users/lancefernando/Desktop/DataMining/RProjects/BayAreaBikeShareData/babs_open_data_year_1/201402_babs_open_data/201402_trip_data.csv", na.strings = "NA")
 trip_data_201402 = na.omit(trip_data_201402)
-weather_data_201402 = read.csv("/Users/lancefernando/Desktop/DataMining/DataSets/BayAreaBikeShareData/babs_open_data_year_1/201402_babs_open_data/201402_weather_data.csv", na.strings = "NA")
+weather_data_201402 = read.csv("/Users/lancefernando/Desktop/DataMining/RProjects/BayAreaBikeShareData/babs_open_data_year_1/201402_babs_open_data/201402_weather_data.csv", na.strings = "NA")
 weather_data_201402 = na.omit(weather_data_201402)
-station_data_201402 = read.csv("/Users/lancefernando/Desktop/DataMining/DataSets/BayAreaBikeShareData/babs_open_data_year_1/201402_babs_open_data/201402_station_data.csv", na.strings = "NA")
+station_data_201402 = read.csv("/Users/lancefernando/Desktop/DataMining/RProjects/BayAreaBikeShareData/babs_open_data_year_1/201402_babs_open_data/201402_station_data.csv", na.strings = "NA")
 station_data_201402 = na.omit(station_data_201402)
 
-trip_data_201408 = read.csv("/Users/lancefernando/Desktop/DataMining/DataSets/BayAreaBikeShareData/babs_open_data_year_1/201408_babs_open_data/201408_trip_data.csv", na.strings = "NA")
+trip_data_201408 = read.csv("/Users/lancefernando/Desktop/DataMining/RProjects/BayAreaBikeShareData/babs_open_data_year_1/201408_babs_open_data/201408_trip_data.csv", na.strings = "NA")
 trip_data_201408 = na.omit(trip_data_201408)
-weather_data_201408 = read.csv("/Users/lancefernando/Desktop/DataMining/DataSets/BayAreaBikeShareData/babs_open_data_year_1/201408_babs_open_data/201408_weather_data.csv", na.strings = "NA")
+weather_data_201408 = read.csv("/Users/lancefernando/Desktop/DataMining/RProjects/BayAreaBikeShareData/babs_open_data_year_1/201408_babs_open_data/201408_weather_data.csv", na.strings = "NA")
 weather_data_201408 = na.omit(weather_data_201408)
-station_data_201408 = read.csv("/Users/lancefernando/Desktop/DataMining/DataSets/BayAreaBikeShareData/babs_open_data_year_1/201408_babs_open_data/201408_station_data.csv", na.strings = "NA")
+station_data_201408 = read.csv("/Users/lancefernando/Desktop/DataMining/RProjects/BayAreaBikeShareData/babs_open_data_year_1/201408_babs_open_data/201408_station_data.csv", na.strings = "NA")
 station_data_201408 = na.omit(station_data_201408)
 
 # Ensuring column names match and merging trip_data files
@@ -168,7 +168,7 @@ rm(curr_time,cust_dur, cust_dur_total,cust_total, date, day, day_total,
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~Adding Features~~~~~~~~~~~~~~~~~~~~
 # ~~~~~Adding qualitative feature value for days when a Giants home game occurs~~~~~~
-Giants_Games <- read.csv("/Users/lancefernando/Desktop/DataMining/DataSets/BayAreaBikeShareData/SF_Giants_Home_Games.csv")
+Giants_Games <- read.csv("/Users/lancefernando/Desktop/DataMining/RProjects/BayAreaBikeShareData/BikeSharing/SF_Giants_Home_Games.csv")
 
 # Changing the format of the dates column
 # +730485 to alter year to 2013
@@ -197,8 +197,8 @@ SF_daily_bikeshare <- data.frame(SF_daily_bikeshare, Giants_Game = Game_with_Dat
 rm(Game_with_Dates,Giants_Games,Game,i,j, index)
 
 #~~~~~~~Adding qualitative feature value for days when a large SF event occurs that
-#~~~~~~~may effect bicycle travel. 1 is SF Sunday events. 2 is SF Bike to work days
-SF_events <- read.csv("/Users/lancefernando/Desktop/DataMining/DataSets/BayAreaBikeShareData/SF_Events.csv")
+#~~~~~~~may effect bicycle travel. 1 is SF Sunday events or SF Bike to work days
+SF_events <- read.csv("/Users/lancefernando/Desktop/DataMining/RPRojects/BayAreaBikeShareData/BikeSharing/SF_Events.csv")
 SF_events$Date <- as.Date(SF_events$Date, format = "%m/%d/%Y") + 730485
 Event <- rep(0, 1083)
 Event_with_Dates <- data.frame(Date = SF_daily_bikeshare$PDT, Event)
@@ -217,7 +217,7 @@ SF_daily_bikeshare <- data.frame(SF_daily_bikeshare, SF_Event = Event_with_Dates
 rm(SF_events, Event_with_Dates,Event,i,j, index)
 
 #~~~~~~~Adding end of the week avg gas price in San Francisco
-SF_gas_avg <- read.csv("/Users/lancefernando/Desktop/DataMining/DataSets/BayAreaBikeShareData/Gas_Prices.csv")
+SF_gas_avg <- read.csv("/Users/lancefernando/Desktop/DataMining/RProjects/BayAreaBikeShareData/BikeSharing/Gas_Prices.csv")
 SF_gas_avg$End.Date <- as.Date(SF_gas_avg$End.Date, format = "%m/%d/%Y") + 730485
 Gas_Value <- rep(0,1083)
 Gas_with_Dates <- data.frame(Date = SF_daily_bikeshare$PDT, Gas_Value)
@@ -250,6 +250,30 @@ rm(Gas_with_Dates, SF_gas_avg, curr_gas_val, Gas_Value, i, index, j, k)
 
 rm(SF_stations, SF_totals, SF_trips, SF_weather_data, trip_data, weather_data)
 
+
+#~~~~~~~Adding Federal Holiday dates to dataframe~~~~~~~~~~~~~~
+Fed_holiday <- read.csv("/Users/lancefernando/Desktop/DataMining/RProjects/BayAreaBikeShareData/BikeSharing/holidays.csv",
+                        header = TRUE)
+holidates <- as.Date(Fed_holiday$Date, format = "%d/%m/%Y")
+all_dates <- SF_daily_bikeshare$PDT
+holiday <- rep(0, 1083)
+all_dates <- data.frame(Date = all_dates, holiday)
+
+index <- 1
+for(i in 1:length(holidates)){
+  for(j in index:nrow(all_dates)){
+    if(holidates[i] == all_dates$Date[j]){
+      
+      all_dates$holiday[j] = 1
+      
+      index = j + 1
+      break
+    }
+  }
+}
+
+SF_daily_bikeshare <- data.frame(SF_daily_bikeshare, Fed_holiday = all_dates$holiday)
+rm(all_dates, Fed_holiday, holidates, holiday, i, index, j)
 
 #~~~~~~~~~~~~~~~~~~~~~~ Calculating distance of each trip in San Francisco ~~~~~~~~~~~~~~~~~
 # WARNING : THIS SCRIPT DOES NOT WORK AS SOME TRIPS ARE MADE FROM CITY TO CITY

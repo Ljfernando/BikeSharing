@@ -1,0 +1,427 @@
+---
+title: "Analysis of the San Francisco Bay Area Bike Share Program"
+author: Lance Fernando & Carlos Aguilera
+output: 
+  html_document:
+    toc: true # table of content true
+    number_sections: true  ## if you want number sections at each table header
+    theme: spacelab  # many options for theme, this one is my favorite.
+    
+
+---
+*Final project for CS451 Data Mining in Fall of 2016 at the University of San Francisco.*
+
+San Francisco is a leading city in the fight towards lowering CO2 emissions. One goal that San Francisco strives to achieve is to reach 50% Sustainable Transportation by 2018. The Bay Area Bike Share program offers a quick and cheap means of transportation in the congested downtown area of San Francisco. In this project we are assessing the success of the [Bay Area Bike Share](http://www.bayareabikeshare.com) company in San Francisco by predicting the total number of bikes rented in a given day. In order to make predictions we will be using various supervised learning regression techniques in the ***R environment***. By doing so, we can evaluate the contribution of Bay Area Bike Share towards San Francisco’s 50% Sustainable Transportation goal and explore what types factors effect the bike share activity. 
+
+Below is a graph of San Francisco transportation emissions on the years reported. Currently, San Francisco has only published emission reportings up until 2012. Our BikeShare dataset begins on August 8, 2013. When San Francisco releases the reportings for the next years we can analyze the change in emissions in correlation to the release of the BikeShare program. 
+
+The data plotted is retrieved from the [Open Data SF website](https://data.sfgov.org).
+
+```{r Emissions, echo = FALSE, warning=FALSE, messages = FALSE}
+SF_Greenhouse_Gas_Inventory <- read.csv("/Users/lancefernando/Desktop/DataMining/RScript/SF_EmissionsScript/San_Francisco_Communitywide_Greenhouse_Gas_Inventory.csv")
+SF_transportation <- SF_Greenhouse_Gas_Inventory[SF_Greenhouse_Gas_Inventory$Sector_General == "Transportation",]
+attach(SF_transportation)
+library(ggplot2)
+
+ggplot(SF_transportation,
+       aes(x=factor(Calendar_Year), y=Emissions_mtCO2e, 
+           fill = Sector_Detail)) + geom_bar(stat = "identity") + xlab("Years") + ylab("CO2 Emissions in metric tons") + ggtitle("San Francisco Transportation Emissions")
+
+```
+
+***
+#Problem Setting
+
+There are two types of users of bike share:
+
+* Subscriber
+    + Annual Membership ($88)
+* Customer
+    + 24-hour ($9)
+    + 3-day ($24)
+
+There is a distinct difference between the activity of *Subscribers* and *Customers*. To predict the total number of bikes rented on a given day, we take two different approaches.
+
+1. We will predict the total number of bike checked out all-together based on variables such as various weather attributes, timing, and large SF events. 
+2. We will predict the number of bikes checked out by *Subscribers*, followed by bikes checked out by *Customers*. We will then compute their sum to evaluate the total number of bikes checked out.
+
+Within our dataset, our target variable is labeled as **day_total**.
+
+***
+#Data Preprocessing
+```{r setup,echo = FALSE, messages = FALSE}
+load("/Users/lancefernando/Desktop/DataMining/RProjects/BayAreaBikeShareData/BikeSharing/BikeshareWoutliers.RData")
+
+```
+
+The main BikeShare data was extracted from the [Bay Area Bike Share](http://www.bayareabikeshare.com). A large amount of time was spent on data preparation. The Bikeshare data included a trip data file that listed every trip that occurred. We wrote scripts that would calculate daily features to work with. We also extracted information from the dates such as the month, day of the week and year. We then merged daily weather and daily totals and deleted rows where the weather was not available. Since we decided to add new external features to our dataset, merging them in was another difficult task. 
+External features included were [SF Giants Home Games](http://sanfrancisco.giants.mlb.com/schedule/), [SF Sunday Street Events](http://www.sundaystreetssf.com), and the [SF Bike to Work Days](https://www.sfbike.org/bike-to-work-day/). 
+
+Here is a an example of one of the R scripts used to preprocess our data.
+```{r ExampleScript}
+# curr_time = as.POSIXlt(SF_trips$Start.Date[1], format = "%m/%d/%Y %H:%M");
+# 
+# index <- 1:nrow(SF_trips)
+# j <- 1
+# 
+# day <- rep(NA, 900)
+# weekday <- rep(NA, 900)
+# month <- rep(NA, 900)
+# year <- rep(NA, 900)
+# day_total <- rep(NA, 900)
+# sub_total <- rep(NA,900)
+# cust_total <- rep(NA,900)
+# date <- rep(NA, 900)
+# duration_total <- rep(NA, 900)
+# sub_dur_total <- rep(NA, 900)
+# cust_dur_total <- rep(NA, 900)
+# 
+# total = 0
+# num_sub = 0
+# num_cust = 0
+# dur_total = 0
+# sub_dur = 0
+# cust_dur = 0
+# for(i in index){
+#   
+#   next_row_time <- as.POSIXlt(SF_trips$Start.Date[i], format = "%m/%d/%Y %H:%M")
+#   if(next_row_time$yday != curr_time$yday | next_row_time$year != curr_time$year | i == nrow(SF_trips)){
+#     
+#     # Storing data at index j to new vectors
+#     day_total[j] <- total
+#     day[j] <- curr_time$mday
+#     weekday[j] <- curr_time$wday
+#     month[j] <- curr_time$mon
+#     year[j] <- curr_time$year + 3900
+#     sub_total[j] <- num_sub
+#     cust_total[j] <- num_cust
+#     sub_dur_total[j] <- sub_dur
+#     cust_dur_total[j] <- cust_dur
+#     duration_total[j] <- dur_total
+#     date[j] <- as.Date.POSIXlt(curr_time, format = "%m/%d/%Y")
+#     
+#     j <- j + 1
+#     
+#     # Updating variables
+#     total <- 0
+#     curr_time <- next_row_time
+#     num_cust <- 0
+#     num_sub <- 0
+#     dur_total <-0
+#     sub_dur <- 0
+#     cust_dur <- 0
+#   }
+#   else{
+#     total <- total + 1
+#     dur_total <- dur_total + SF_trips$Duration[i]
+#     if(SF_trips$Subscriber.Type[i] == "Subscriber"){
+#       num_sub <- num_sub + 1
+#       sub_dur <- sub_dur + SF_trips$Duration[i]
+#     }
+#     else{
+#       num_cust <- num_cust +1
+#       cust_dur <- cust_dur + SF_trips$Duration[i]
+#     }
+#   }
+# }
+# 
+# #date is in numeric form with origin 3970-01-01
+# #converting it to readable format
+# PDT <- as.Date(date, origin = "3970-01-01")
+# is_weekend <- ifelse(weekday == 0 | weekday == 6, 1, 0)
+# SF_totals <- data.frame(PDT, day_total, sub_total, cust_total, duration_total, sub_dur_total, cust_dur_total,is_weekend, day, weekday, month, year)
+
+```
+
+***
+#Data Analysis
+
+Our final dataset consists of San Francisco bike share data between 8-29-2013 through 8-31-2016 (three years worth of data).
+
+##Plot analysis
+
+###Rental Activity
+We began our analysis by observing the rental activity of Subscribers and Customers (labeled as such under **Subscriber.Type** in our dataset) based on the day of the week (labeled as **weekday** w/ values 0-6 for Sun-Sat respectively. Through this analysis, we noticed that Subscribers are significantly more active on weekdays (Mon-Fri) probably due to it being a workday. On the other hand, Customers are less active on weekdays and more active on the weekends, more being so on Saturdays. We then plotted both of their activity based on the month (labeled as **month** w/values 0-11). We found that Subscriber rentals were much greater overall than Customers. In addition, between the late November and early January showed a great decrease of bike rentals within Subscribers. The decrease describes that there is a correlation between the number of rentals based on the day and month predictors. Since days Mon-Fri have similar results, we simplified the **weekday** predictor into a classification variable called **is_weekend** where the value is 1 if it is the weekend and 0 otherwise. Findings can be seen in the figure below.
+
+####Rental activity plot
+```{r Totals, echo = FALSE, messages = FALSE}
+attach(SF_daily_bikeshare)
+par(mfrow = c(2,2))
+plot(weekday, sub_total, xlab = "Day of the week", ylab = "Number of rentals", main = "Subscribers", col = "skyblue")
+plot(weekday, cust_total, xlab = "Day of the week", ylab = "Number of rentals", main = "Customers", col = "slateblue4")
+plot(PDT, sub_total, col = ifelse(is_weekend == 1,"orange","steelblue"), xlab = "Year", ylab = "Number of rentals", main = "Subscribers")
+legend(x = as.Date("2016-04-01"), y = 500, c("Weekday", "Weekend"), col = c("steelblue", "orange"), pch = 1, cex = 0.6)
+plot(PDT, cust_total, col = ifelse(is_weekend == 1,"orange", "steelblue"), xlab = "Year", ylab = "Number of rentals", main = "Customers")
+legend(x = as.Date("2016-04-01"), y = 500, c("Weekday", "Weekend"), col = c("steelblue", "orange"), pch = 1, cex = 0.6)
+# Subscribers are more active on weekdays with customers on weekends
+# Between late Dec through early Jan there is a decrease in Subscribers
+invisible(dev.off())
+```
+
+
+###Weather Effects
+We then proceeded to analyze the change in weather throughout the year. Weather factors we include are Mean.TemperatureF, Mean.VisibilityMiles and WindDirDegrees (each labeled as such in the dataset). These are all factors that would have an effect on the decision to use the bike share bicycles. Findings can be seen in the figure below.
+
+####Temperature and Activity plot
+```{r Temperature, echo = FALSE, messages = FALSE}
+par(mfrow = c(2,1))
+plot(PDT, day_total, type = 'l', col = "forestgreen", xlab = "Date", ylab = "Number of rentals", main = "Rentals each month")
+plot(PDT, Mean.TemperatureF, type = 'l', col = "red", xlab = "Date", ylab = "Temperature in F", main = "Temperature each month ")
+lines(PDT, Max.TemperatureF, col = "orange")
+lines(PDT, Min.TemperatureF, col = "lightblue")
+legend(x = as.Date("2016-04-01"), y = 50, c("MaxTemp", "MeanTemp", "MinTemp"), col = c("orange", "red", "lightblue"), lty = c(1,1), cex = 0.5)
+# Decrease in temperature during winter time
+invisible(dev.off())
+
+```
+
+###Rental Duration
+
+We then analyzed the importance of the total duration of rentals per day (labeled as **duration_total**) . We plotted in a similar fashion of how we plotted duration totals. We noticed significant outliers in this plot.
+
+####Duration plot with outliers
+```{r outlier, echo = FALSE, messages = FALSE}
+par(mfrow = c(1,2))
+plot(weekday, duration_total/60, xlab = "Day of the week", ylab= "Duration in minutes", main = "Duration totals per day", col = "slateblue")
+plot(PDT, duration_total/60, xlab = "Month", ylab = "Duration in minutes", main = "Duration totals throughout the year", col = "firebrick")
+# Notice the outlier
+invisible(dev.off())
+which.max(duration_total)#clear outlier where duration at index 457
+SF_daily_bikeshare[which.max(duration_total), "duration_total"]
+SF_daily_bikeshare <- SF_daily_bikeshare[-457,] # Removing outlier
+
+which.max(duration_total)#clear outlier where duration at index 655
+SF_daily_bikeshare[which.max(duration_total), "duration_total"]
+SF_daily_bikeshare <- SF_daily_bikeshare[-655,] # Removing outlier
+
+```
+
+Removing those data points that were skewing our dataset made much nicer plots.
+
+####Duration plot without outliers
+```{r removedOutlier, echo = FALSE, messages = FALSE}
+attach(SF_daily_bikeshare)
+par(mfrow = c(1,2))
+plot(weekday, duration_total/60, xlab = "Day of the week", ylab= "Duration in minutes", main = "Duration totals per day", col = "slateblue")
+plot(PDT, duration_total/60, xlab = "Month", ylab = "Duration in minutes", main = "Duration totals throughout the year", col = "firebrick")
+invisible(dev.off())
+```
+
+As expected, the duration plots are similar to the previous rental activity plots if we were to seperate **Subscribers** and **Customers**.
+```{r, echo = FALSE, messages = FALSE}
+par(mfrow = c(2,2))
+plot(weekday, sub_dur_total/60, xlab = "Day of the week", ylab = "Duration in minutes", main = "Subscribers", col = "skyblue")
+plot(weekday[-96], cust_dur_total[-96]/60, xlab = "Day of the week", ylab = "Duration in minutes", main = "Customers", col = "slateblue4")
+plot(PDT, sub_dur_total/60, col = ifelse(is_weekend ==1,"orange", "steelblue"), xlab = "Month", ylab = "Duration in minutes", main = "Subscribers")
+legend(x = as.Date("2016-04-01"), y = 20000, c("Weekday", "Weekend"), col = c("steelblue", "orange"), pch = 1, cex = 0.6)
+plot(PDT[-96], cust_dur_total[-96]/60, col = ifelse(is_weekend == 1, "orange", "steelblue"), xlab = "Month", ylab = "Duration in minutes", main = "Customers")
+legend(x = as.Date("2016-04-01"), y = 27500, c("Weekday", "Weekend"), col = c("steelblue", "orange"), pch = 1, cex = 0.6)
+
+invisible(dev.off())
+```
+
+##Additional Features
+
+###Gas Prices
+In order to make our project more interesting we decided to add a few new features in our data set. First, we recorded the average price of gas in San Francisco at the end of the week. Gas prices(**Avg_Gas_Value**) compared with **day_total** can be seen in the figure below.
+
+####Gas pricing plot
+```{r gas, echo = FALSE, messages = FALSE}
+par(mfrow = c(2,1))
+plot(PDT, day_total, type = 'l', col = "lightblue", xlab = "Date", ylab = "Number of rentals", main = "Rentals each day")
+plot(PDT, Avg_Gas_Value, type = 'l', col = "orange", xlab = "Date", ylab = "Gas Prices", main = "Average Gas Prices")
+invisible(dev.off())
+
+```
+
+
+###Large San Francisco Events
+In addition, we also added categorical variables for specific events in San Francisco that may have an effect on SF Bikeshare. San Francisco Giants home games (**Giants_Game**) will be 1 if it occurs and 0 otherwise. In the plot below we create a beige block where a Giants home game occurred. We also included dates when the Bike to Work Day and SF Sunday Street festivals occured. For these dates, the **SF_Event** variable takes on the value of 1 if an event occured and 0 otherwise.
+
+####Giants games plot
+```{r Games, echo = FALSE, messages = FALSE}
+# Rentals and giants games
+plot(PDT, day_total, panel.first = lines(PDT, Giants_Game*1400, type = 'h', col = "beige"), 
+      type = 'l', col = "lightblue", xlab = "Date", ylab = "Number of rentals", ylim = c(100,1400), 
+      main = "Rentals each day")
+legend(as.Date("2016-06-01"), 400, c("Num Rentals", "Giants Game"), col = c("lightblue", "beige"), pch = '-', lwd = 3, cex = 0.6)
+
+```
+
+***
+#Modeling
+
+We will be focusing on a supervised learning approach. Our modeling consisted of three rounds where the datasets were slightly different in each one.
+
+* Round 1
+    + In our first round of modeling we only included one year's worth of SF BikeShare data (9/1/2014 - 8/31/2015) before feeling the need to grab more data.
+
+* Round 2
+    + In our second round of modeling we expanded our dateset by grabbing three year's worth of data (8/29/2013 - 8/31/2016) nearly trippling our initial set of observations
+    
+* Round 3
+    + In our third round of modeling we expanded our feature space to include the additional features (**Gas_Prices** and **SF_Events**)
+    
+In order to train our models we randomly split our dataset into training(70%) and testing sets(30%).
+
+##Linear Regression
+We started with [linear regression](https://en.wikipedia.org/wiki/Linear_regression) in order to predict Subscriber/Customer rental totals. Since subscriber totals and customer totals vary based on specific features, we will predict each one separately and then add them together to compute the total amount of rentals that day. We first create a linear regression fit using a random training set of 70%. We use linear regression because the total number of rentals range from 42 to 1380 bikes per day. Our progress in using linear regression can be observed in the plot below.
+
+###RMSE three round linear regression
+```{r Linear Regression, echo = FALSE, messages = FALSE}
+y1 <- c(34378.4, 15038, 14740.47)
+y2 <- c(30000,19242.95, 14332.68)
+y3 <- c(13669.94, 15617.69, 1123.544)
+par(mfrow = c(1,3), oma = c(0,0,2,0))
+plot(1:3, y1, xaxt = "n",  xlab = "Model Fitting Round", ylab = "MSE",
+     main = "Prediction Accuracy of Total Rentals", type = "l")
+axis(1, at = 1:3, labels = c("Round 1", "Round 2", "Round 3"))
+
+plot(1:3, y2, xaxt = "n",  xlab = "Model Fitting Round", ylab = "MSE", 
+     main = "Prediction Accuracy of Subscriber Rentals", type = "l")
+axis(1, at = 1:3, labels = c("Round 1", "Round 2", "Round 3"))
+
+plot(1:3, y3, xaxt = "n", xlab = "Model Fitting Round", ylab = "MSE", 
+     main = "Prediction Accuracy of Customer Rentals", type = "l")
+axis(1, at = 1:3, labels = c("Round 1", "Round 2", "Round 3"))
+
+mtext("Linear Regression Prediction Accuracy Over Three Rounds of Fitting", outer = TRUE, cex = 1)
+
+```
+
+##Cross Validation
+To get a more accurate RMSE of our model we then used [k-fold cross validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)) on the linear models with k=10 for **Round 2** and **Round 3** of our modeling. Cross validation decreases the MSE of sub_total from 19000 to 13500 and cust_total from 15000 to 7000. This decrease in MSE can be observed in the plot below.
+
+Avg_Gas_Value, SF_Event and Giants_Game are newly added features to the dataset so it is necessary to assess whether or not these values have any effect on the number of rentals. When fitting a linear model with these predictors, their p-values are 0.05, 1.65e-06, and 0.0003 respectively. Based on these low p-values we can reject the null hypothesis and keep them in our model.
+
+
+We attempted forward subset selection while using adjusted r^2 as our metric. We used linear regression with the variables with the highest adj r^2 but this did not decrease MSE. We decided to use all predictors in our model.
+ 
+###K-Fold Cross Validation
+```{r CV, echo = FALSE, message = FALSE}
+y1 <- c(13280.61, 12623.71)
+y2 <- c(14194.25, 12533.24)
+y3 <- c(6565.271, 1092.988)
+
+
+par(mfrow = c(1,3), oma = c(0,0,2,0))
+plot(2:3, y1, xaxt = "n", xlab = "Model Fitting Round", ylab = "MSE",
+     main = "Prediction Accuracy of Total Rentals Per Day", type = "l")
+axis(1, at = 2:3, labels = c("W/O new features", "W/New Features"))
+
+plot(2:3, y2,xaxt = "n",  xlab = "Model Fitting Round", ylab = "MSE", 
+     main = "Prediction Accuracy of Subscriber Rentals Per Day", type = "l")
+axis(1, at = 2:3, labels = c("W/O new features", "W/New Features"))
+
+plot(2:3, y3,xaxt = "n",  xlab = "Model Fitting Round", ylab = "MSE", 
+     main = "Prediction Accuracy of Customer Rentals Per Day", type = "l")
+axis(1, at = 2:3, labels = c("W/O new features", "W/New Features"))
+
+mtext("K-Fold CV Prediction Accuracy Over Three Rounds of Fitting", outer = TRUE, cex = 1)
+```
+
+##Decision Trees
+For **Round 2** and **Round 3** we utilized decision trees to model the dependent variable. We attempted three different algorithms:
+
+* [Single Decision Tree](https://en.wikipedia.org/wiki/Decision_tree_learning)
+* [Bootstrap Aggregation (Bagging)](https://en.wikipedia.org/wiki/Bootstrap_aggregating)
+* [Random Forests](https://en.wikipedia.org/wiki/Random_forest)
+
+Below is our progress for each modeling algorithm with and without the addition of features.
+
+###Tree Method Analysis
+```{r Tree methods, echo = FALSE, messages = FALSE}
+models <- c("Single Tree", "Bagging", "Random Forest")
+# Indexes are Single Tree, Bagging and Random Forest values respectively
+# Everything up to y3a are from the second round of tree modeling
+y1 <- c(12492.150, 5127.362, 4604.872) # MSE of day_total for each Tree model
+y2 <- c(9667.074, 4250.126, 3874.540)# MSE of sub_total
+y3 <- c(1555.1200, 1215.458, 1014.820)# MSE of cust_total
+y3a <- c(11490.530, 5335.834, 4979.339)# MSE of sub_total + cust_total
+
+# Third round of tree modeling
+y4 <- c(12492.150, 4896.944, 4628.969)# MSE of day_total for each Tree model
+y5 <- c(9667.074, 3993.661, 3930.166)# MSE of sub_total
+y6 <- c(1555.1200, 1059.445, 895.4241)# MSE of cust_total
+y6a <- c(11490.530,  4399.548, 4134.240)# MSE of sub_total + cust_total
+
+par(mfrow = c(2,2), oma = c(0,0,2,0))
+# Plotting sub_total MSE
+plot(1:3, y2, xaxt = "n", xlab='Types of Modeling', ylab = "MSE", ylim = c(3000, 9000), type = "l",
+     main = "MSE for Predicting sub_total", col = "red")
+axis(1, at=1:3, labels=models)
+lines(1:3, y5, col = "blue")
+legend(2.1, 8000, c("w/o New Features", "w/ New Features"), col = c("red", "blue"), pch = "-",
+       lwd = 1, cex = .6)
+
+# Plotting cust_total MSE
+plot(1:3, y3, xaxt = "n", xlab='Types of Modeling', ylab = "MSE", ylim = c(500, 2000), type = "l",
+     main = "MSE for Predicting cust_total", col = "red")
+axis(1, at=1:3, labels=models)
+lines(1:3, y6, col = "blue")
+
+# Plotting day_total MSE
+
+plot(1:3, y1, xaxt = "n", xlab='Types of Modeling', ylab = "MSE", ylim = c(4000, 12000), type = "l",
+     main = "MSE for Predicting day_total", col = "red")
+axis(1, at=1:3, labels=models)
+lines(1:3, y4, col = "blue")
+
+# Plotting sub_total + cust_total MSE
+plot(1:3, y3a, xaxt = "n", xlab='Types of Modeling', ylab = "MSE", ylim = c(4000, 12000), type = "l",
+     main = "MSE for day_total from of sub_total and cust_total", col = "red")
+axis(1, at=1:3, labels=models)
+lines(1:3, y6a, col = "blue")
+
+mtext("Change in Tree Ensemble MSE Based on the Addition of New Features", outer = TRUE, cex = 1.25)
+
+```
+
+
+***
+#Challenges
+During the preprocessing stage we noticed the sparsity of our data; we needed to obtain another set of data. The challenge was obtaining that new set of data because the Bay Area Bike Share had only released a year’s worth of data and we figured that we might have enough observations with one year’s worth for testing. Unfortunately, the year’s worth of data gave us a poor MSE which resulted in us using two years’ worth of data. Again the problem was not having enough data in which to test and predict. Fortunately, Bay Area Bike Share uploaded another year of data which aided our prediction slightly.  
+
+In regards to feature selection we attempted [subset selection](https://en.wikipedia.org/wiki/Feature_selection#Subset_selection) analyzing the change in adjusted r^2 as our metric. Using the subset of variables with the highest adjusted r^2 in a linear regression model did not decrease MSE. We opted to to use all predictors
+
+Using weather and time patterns is an obvious approach to predicting the amount of Bikeshare rentals. Therefore, we wanted to find other predictors that could possibly enhance our initial models. Finding the data for extra features(**Avg_Gas_Value**, **SF_Events** and **Giants_Game**) was tedious find. In addition, merging this information into our working dataset also took a significant amount of time. Fortunately we were able to successfully integrate these additional features.
+
+
+***
+#Future Modifications
+After reviewing the techniques we used in this analysis there are certain things we could have done differently to achieve better results. 
+
+##Training/Testing Sets
+Instead of randomly splitting training and testing into 70% and 30% respectively, we can instead pull 20 days out of each month randomly and use those as our training set and the other 10 as the test set. This will provide us with a better sampling representation. 
+
+##Feature Engineering/Transformation
+Besides extracting daily totals from the original dataset, we could provide more analysis to find interactions between our variables to create more features. Much of our data is skewed therefore [transforming](https://en.wikipedia.org/wiki/Data_transformation_(statistics)) them may increase linearity and provide us with more accurate predictions.
+
+We could also extract information from the most popularly used BikeShare stations. Plot below.
+
+###Popular Stations
+```{r Trips analysis, echo = FALSE}
+
+par(mfrow = c(1, 2))
+SF_trips$Start.Terminal <- as.factor(SF_trips$Start.Terminal)
+SF_trips$End.Terminal <- as.factor(SF_trips$End.Terminal)
+SF_trips$Start.Terminal <- as.numeric(SF_trips$Start.Terminal)
+SF_trips$End.Terminal <- as.numeric(SF_trips$End.Terminal)
+hist(SF_trips$Start.Terminal, xlab = "Station ID", ylab = "Number of occurences", main = "Start Station Stats", col = "darkseagreen3", breaks = 42)
+hist(SF_trips$End.Terminal, xlab = "Station ID", ylab = "Number of occurences", main = "End Station stats", col = "firebrick", breaks = 42, xlim = c(10, 51))
+invisible(dev.off())
+
+```
+
+##Other Machine Learning Algorithms
+In order to enhance our prediction accuracy, we can resort to using other machine learning algorithms such as [gradient boosting](https://en.wikipedia.org/wiki/Gradient_boosting) to make predictions and [lasso](https://en.wikipedia.org/wiki/Lasso_(statistics)) to select signficant features.
+
+
+#Conclusion
+The sparseness of our initial dataset proved to be insufficient for any modeling techniques. Expanding our observation size as well as predictor space greatly decreased the overall MSE of our models. Linear regression with Cross Validation did not prove to be accurate enough models to predicting the number of rentals. In the end, our random forests approach to predict the sum of Subscriber and Customer totals separately gave us our most accurate RMSE on the testing set. With this type of model we can gain a better idea on how the various features within the dataset effect the overall rental activity of the San Francisco Bay Area Bike Share.
+
+With this analysis we attempt to find what variables truly effect the activity of BikeShare rentals. San Francisco’s latest data of greenhouse gas emissions was released in 2012. In 2013, Bay Area Bike Share launched their San Francisco program. Following the release of San Francisco’s most current greenhouse gas emissions inventory, we will be able to evaluate how bike sharing positively or negatively effect San Francisco's fight towards lowering CO2 emissions.
+
+
+
+
