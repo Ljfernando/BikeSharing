@@ -186,21 +186,18 @@ plot(weekday, duration_total/60, xlab = "Day of the week", ylab= "Duration in mi
 plot(PDT, duration_total/60, xlab = "Month", ylab = "Duration in minutes", main = "Duration totals throughout the year", col = "firebrick")
 # Notice the outlier
 invisible(dev.off())
-which.max(duration_total)#clear outlier where duration at index 457
-SF_daily_bikeshare[which.max(duration_total), "duration_total"]
-SF_daily_bikeshare <- SF_daily_bikeshare[-457,] # Removing outlier
 
-which.max(duration_total)#clear outlier where duration at index 655
-SF_daily_bikeshare[which.max(duration_total), "duration_total"]
-SF_daily_bikeshare <- SF_daily_bikeshare[-655,] # Removing outlier
+SF_daily_bikeshare <- SF_daily_bikeshare[-which.max(duration_total),] # Removing outlier
+
+SF_daily_bikeshare <- SF_daily_bikeshare[-which.max(duration_total),] # Removing outlier
 
 ```
 
 Removing those data points that were skewing our dataset made much nicer plots.
 
 ####Duration plot without outliers
-```{r removedOutlier, echo = FALSE, messages = FALSE}
-attach(SF_daily_bikeshare)
+```{r removedOutlier, include = FALSE, cache=FALSE, echo = FALSE, messages = FALSE}
+invisible(attach(SF_daily_bikeshare))
 par(mfrow = c(1,2))
 plot(weekday, duration_total/60, xlab = "Day of the week", ylab= "Duration in minutes", main = "Duration totals per day", col = "slateblue")
 plot(PDT, duration_total/60, xlab = "Month", ylab = "Duration in minutes", main = "Duration totals throughout the year", col = "firebrick")
@@ -208,7 +205,7 @@ invisible(dev.off())
 ```
 
 As expected, the duration plots are similar to the previous rental activity plots if we were to seperate **Subscribers** and **Customers**.
-```{r, echo = FALSE, messages = FALSE}
+```{r Duration, echo = FALSE, messages = FALSE}
 par(mfrow = c(2,2))
 plot(weekday, sub_dur_total/60, xlab = "Day of the week", ylab = "Duration in minutes", main = "Subscribers", col = "skyblue")
 plot(weekday[-96], cust_dur_total[-96]/60, xlab = "Day of the week", ylab = "Duration in minutes", main = "Customers", col = "slateblue4")
