@@ -138,7 +138,7 @@ Here is a an example of one of the R scripts used to preprocess our data.
 
 Our final dataset consists of San Francisco bike share data between 8-29-2013 through 8-31-2016 (three years worth of data).
 
-##Plot analysis
+##Current Features Analysis
 
 ###Rental Activity
 We began our analysis by observing the rental activity of Subscribers and Customers (labeled as such under **Subscriber.Type** in our dataset) based on the day of the week (labeled as **weekday** w/ values 0-6 for Sun-Sat respectively. Through this analysis, we noticed that Subscribers are significantly more active on weekdays (Mon-Fri) probably due to it being a workday. On the other hand, Customers are less active on weekdays and more active on the weekends, more being so on Saturdays. We then plotted both of their activity based on the month (labeled as **month** w/values 0-11). We found that Subscriber rentals were much greater overall than Customers. In addition, between the late November and early January showed a great decrease of bike rentals within Subscribers. The decrease describes that there is a correlation between the number of rentals based on the day and month predictors. Since days Mon-Fri have similar results, we simplified the **weekday** predictor into a classification variable called **is_weekend** where the value is 1 if it is the weekend and 0 otherwise. Findings can be seen in the figure below.
@@ -190,14 +190,15 @@ invisible(dev.off())
 SF_daily_bikeshare <- SF_daily_bikeshare[-which.max(duration_total),] # Removing outlier
 
 SF_daily_bikeshare <- SF_daily_bikeshare[-which.max(duration_total),] # Removing outlier
-
 ```
 
+```{r, include=FALSE}
+attach(SF_daily_bikeshare)
+```
 Removing those data points that were skewing our dataset made much nicer plots.
 
 ####Duration plot without outliers
-```{r removedOutlier, include = FALSE, cache=FALSE, echo = FALSE, messages = FALSE}
-invisible(attach(SF_daily_bikeshare))
+```{r removedOutlier, echo = FALSE, messages = FALSE}
 par(mfrow = c(1,2))
 plot(weekday, duration_total/60, xlab = "Day of the week", ylab= "Duration in minutes", main = "Duration totals per day", col = "slateblue")
 plot(PDT, duration_total/60, xlab = "Month", ylab = "Duration in minutes", main = "Duration totals throughout the year", col = "firebrick")
