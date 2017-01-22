@@ -177,7 +177,7 @@ invisible(dev.off())
 
 ###Rental Duration
 
-We then analyzed the importance of the total duration of rentals per day (labeled as **duration_total**) . We plotted in a similar fashion of how we plotted duration totals. We noticed significant outliers in this plot.
+We then analyzed the importance of the total duration of rentals per day (labeled as **duration_total**) . We noticed significant outliers in this plot.
 
 ####Duration plot with outliers
 ```{r outlier, echo = FALSE, messages = FALSE}
