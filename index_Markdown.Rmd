@@ -426,12 +426,13 @@ invisible(dev.off())
 ##Other Machine Learning Algorithms
 In order to enhance our prediction accuracy, we can resort to using other machine learning algorithms such as [gradient boosting](https://en.wikipedia.org/wiki/Gradient_boosting) to make predictions and [lasso](https://en.wikipedia.org/wiki/Lasso_(statistics)) to select signficant features.
 
-
+***
 #Conclusion
 The sparseness of our initial dataset proved to be insufficient for any modeling techniques. Expanding our observation size as well as predictor space greatly decreased the overall MSE of our models. Linear regression with Cross Validation did not prove to be accurate enough models to predicting the number of rentals. In the end, our random forests approach to predict the sum of Subscriber and Customer totals separately gave us our most accurate RMSE on the testing set. With this type of model we can gain a better idea on how the various features within the dataset effect the overall rental activity of the San Francisco Bay Area Bike Share.
 
 With this analysis we attempt to find what variables truly effect the activity of BikeShare rentals. San Francisco’s latest data of greenhouse gas emissions was released in 2012. In 2013, Bay Area Bike Share launched their San Francisco program. Following the release of San Francisco’s most current greenhouse gas emissions inventory, we will be able to evaluate how bike sharing positively or negatively effect San Francisco's fight towards lowering CO2 emissions.
 
+***
 #Tools Used
 All coding was conducted in the R environment using RStudio. The packages used are the following:
 
