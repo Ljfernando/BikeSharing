@@ -21,6 +21,7 @@ The data plotted is retrieved from the [Open Data SF website](https://data.sfgov
 SF_Greenhouse_Gas_Inventory <- read.csv("/Users/lancefernando/Desktop/DataMining/RScript/SF_EmissionsScript/San_Francisco_Communitywide_Greenhouse_Gas_Inventory.csv")
 SF_transportation <- SF_Greenhouse_Gas_Inventory[SF_Greenhouse_Gas_Inventory$Sector_General == "Transportation",]
 attach(SF_transportation)
+
 library(ggplot2)
 
 ggplot(SF_transportation,
@@ -393,7 +394,18 @@ After reviewing the techniques we used in this analysis there are certain things
 Instead of randomly splitting training and testing into 70% and 30% respectively, we can instead pull 20 days out of each month randomly and use those as our training set and the other 10 as the test set. This will provide us with a better sampling representation. 
 
 ##Feature Engineering/Transformation
-Besides extracting daily totals from the original dataset, we could provide more analysis to find interactions between our variables to create more features. Much of our data is skewed therefore [transforming](https://en.wikipedia.org/wiki/Data_transformation_(statistics)) them may increase linearity and provide us with more accurate predictions.
+Besides extracting daily totals from the original dataset, we could provide more analysis to find interactions between our variables to create more features. Much of our data is skewed or vary significantly in range [transforming](https://en.wikipedia.org/wiki/Data_transformation_(statistics)) them may increase linearity and provide us with more accurate predictions.
+
+###Log-Transformed Analysis
+```{r Skewed analysis, echo = FALSE, warning=FALSE,message=FALSE}
+
+par(mfrow = c(2,2))
+for(i in c("cust_total", "duration_total")){
+  plot(density(SF_daily_bikeshare[,i]), main =i)
+    plot(density(log(SF_daily_bikeshare[,i])), main =paste("Log(", i, ")", sep = ""))
+}
+invisible(dev.off())
+```
 
 We could also extract information from the most popularly used BikeShare stations. Plot below.
 
@@ -420,6 +432,13 @@ The sparseness of our initial dataset proved to be insufficient for any modeling
 
 With this analysis we attempt to find what variables truly effect the activity of BikeShare rentals. San Francisco’s latest data of greenhouse gas emissions was released in 2012. In 2013, Bay Area Bike Share launched their San Francisco program. Following the release of San Francisco’s most current greenhouse gas emissions inventory, we will be able to evaluate how bike sharing positively or negatively effect San Francisco's fight towards lowering CO2 emissions.
 
+#Tools Used
+All coding was conducted in the R environment using RStudio. The packages used are the following:
 
-
+* [ggplot2](https://cran.r-project.org/web/packages/ggplot2/ggplot2.pdf)
+* [measurements](https://cran.r-project.org/web/packages/measurements/measurements.pdf)
+* [leaps](https://cran.r-project.org/web/packages/leaps/leaps.pdf)
+* [boot](https://cran.r-project.org/web/packages/boot/boot.pdf)
+* [tree](https://cran.r-project.org/web/packages/tree/tree.pdf)
+* [randomForest](https://cran.r-project.org/web/packages/randomForest/randomForest.pdf)
 
