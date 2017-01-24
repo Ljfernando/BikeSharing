@@ -161,7 +161,7 @@ invisible(dev.off())
 
 
 ###Weather Effects
-We then proceeded to analyze the change in weather throughout the year. Weather factors we include are Mean.TemperatureF, Mean.VisibilityMiles and WindDirDegrees (each labeled as such in the dataset). These are all factors that would have an effect on the decision to use the bike share bicycles. Findings can be seen in the figure below.
+We then proceeded to analyze the change in weather throughout the year. Weather factors we include are Mean.TemperatureF, Mean.VisibilityMiles and WindDirDegrees (each labeled as such in the dataset). These are all factors that would have an effect on the decision to use the bike share bicycles. We plotted the change in Temperature below the change in rentals per day. Notice a similar increasing and decreasing trend. Findings can be seen in the figure below.
 
 ####Temperature and Activity plot
 ```{r Temperature, echo = FALSE, messages = FALSE}
