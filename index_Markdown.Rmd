@@ -46,7 +46,7 @@ There is a distinct difference between the activity of *Subscribers* and *Custom
 1. We will predict the total number of bike checked out all-together based on variables such as various weather attributes, timing, and large SF events. 
 2. We will predict the number of bikes checked out by *Subscribers*, followed by bikes checked out by *Customers*. We will then compute their sum to evaluate the total number of bikes checked out.
 
-Within our dataset, our target variable is labeled as **day_total**.
+Within our dataset, our target variable is labeled as **day_total**. In this analysis we will start with linear regression to analyze the linearity between our dependent variable and the independent variables. We will then assess the importance of validating the accuracy of our model using cross-validation. Finally we will see how using non-parametric models may be lead to better results than our previous paramtetric, linear regression model.
 
 ***
 #Data Preprocessing
@@ -424,7 +424,9 @@ invisible(dev.off())
 ```
 
 ##Other Machine Learning Algorithms
-In order to enhance our prediction accuracy, we can resort to using other machine learning algorithms such as [gradient boosting](https://en.wikipedia.org/wiki/Gradient_boosting) to make predictions and [lasso](https://en.wikipedia.org/wiki/Lasso_(statistics)) to select signficant features.
+In order to enhance our prediction accuracy, we can resort to using other machine learning algorithms such as [gradient boosting](https://en.wikipedia.org/wiki/Gradient_boosting) to make predictions and [lasso](https://en.wikipedia.org/wiki/Lasso_(statistics)) to select signficant features. 
+
+Regarding significant features, we should also try a subset selection method using cross-validation to evaluate the model fit as opposed to adjr^2 and other similar metrics. With a smaller subset of variables in our model we must also check for a correlation of error terms as this happens often in time-series data. A correlation in the error terms would make our confidence intervals much narrower and thus falsifying the statistical significance of certain variables chosen to fit the model. 
 
 ***
 #Conclusion
