@@ -59,78 +59,78 @@ The main BikeShare data was extracted from the [Bay Area Bike Share](http://www.
 External features included were [SF Giants Home Games](http://sanfrancisco.giants.mlb.com/schedule/), [SF Sunday Street Events](http://www.sundaystreetssf.com), and the [SF Bike to Work Days](https://www.sfbike.org/bike-to-work-day/). 
 
 Here is a an example of one of the R scripts used to preprocess our data.
-```{r ExampleScript}
-# curr_time = as.POSIXlt(SF_trips$Start.Date[1], format = "%m/%d/%Y %H:%M");
-# 
-# index <- 1:nrow(SF_trips)
-# j <- 1
-# 
-# day <- rep(NA, 900)
-# weekday <- rep(NA, 900)
-# month <- rep(NA, 900)
-# year <- rep(NA, 900)
-# day_total <- rep(NA, 900)
-# sub_total <- rep(NA,900)
-# cust_total <- rep(NA,900)
-# date <- rep(NA, 900)
-# duration_total <- rep(NA, 900)
-# sub_dur_total <- rep(NA, 900)
-# cust_dur_total <- rep(NA, 900)
-# 
-# total = 0
-# num_sub = 0
-# num_cust = 0
-# dur_total = 0
-# sub_dur = 0
-# cust_dur = 0
-# for(i in index){
-#   
-#   next_row_time <- as.POSIXlt(SF_trips$Start.Date[i], format = "%m/%d/%Y %H:%M")
-#   if(next_row_time$yday != curr_time$yday | next_row_time$year != curr_time$year | i == nrow(SF_trips)){
-#     
-#     # Storing data at index j to new vectors
-#     day_total[j] <- total
-#     day[j] <- curr_time$mday
-#     weekday[j] <- curr_time$wday
-#     month[j] <- curr_time$mon
-#     year[j] <- curr_time$year + 3900
-#     sub_total[j] <- num_sub
-#     cust_total[j] <- num_cust
-#     sub_dur_total[j] <- sub_dur
-#     cust_dur_total[j] <- cust_dur
-#     duration_total[j] <- dur_total
-#     date[j] <- as.Date.POSIXlt(curr_time, format = "%m/%d/%Y")
-#     
-#     j <- j + 1
-#     
-#     # Updating variables
-#     total <- 0
-#     curr_time <- next_row_time
-#     num_cust <- 0
-#     num_sub <- 0
-#     dur_total <-0
-#     sub_dur <- 0
-#     cust_dur <- 0
-#   }
-#   else{
-#     total <- total + 1
-#     dur_total <- dur_total + SF_trips$Duration[i]
-#     if(SF_trips$Subscriber.Type[i] == "Subscriber"){
-#       num_sub <- num_sub + 1
-#       sub_dur <- sub_dur + SF_trips$Duration[i]
-#     }
-#     else{
-#       num_cust <- num_cust +1
-#       cust_dur <- cust_dur + SF_trips$Duration[i]
-#     }
-#   }
-# }
-# 
-# #date is in numeric form with origin 3970-01-01
-# #converting it to readable format
-# PDT <- as.Date(date, origin = "3970-01-01")
-# is_weekend <- ifelse(weekday == 0 | weekday == 6, 1, 0)
-# SF_totals <- data.frame(PDT, day_total, sub_total, cust_total, duration_total, sub_dur_total, cust_dur_total,is_weekend, day, weekday, month, year)
+```{r ExampleScript, eval=FALSE}
+curr_time = as.POSIXlt(SF_trips$Start.Date[1], format = "%m/%d/%Y %H:%M");
+
+index <- 1:nrow(SF_trips)
+j <- 1
+
+day <- rep(NA, 900)
+weekday <- rep(NA, 900)
+month <- rep(NA, 900)
+year <- rep(NA, 900)
+day_total <- rep(NA, 900)
+sub_total <- rep(NA,900)
+cust_total <- rep(NA,900)
+date <- rep(NA, 900)
+duration_total <- rep(NA, 900)
+sub_dur_total <- rep(NA, 900)
+cust_dur_total <- rep(NA, 900)
+
+total = 0
+num_sub = 0
+num_cust = 0
+dur_total = 0
+sub_dur = 0
+cust_dur = 0
+for(i in index){
+
+  next_row_time <- as.POSIXlt(SF_trips$Start.Date[i], format = "%m/%d/%Y %H:%M")
+  if(next_row_time$yday != curr_time$yday | next_row_time$year != curr_time$year | i == nrow(SF_trips)){
+
+    # Storing data at index j to new vectors
+    day_total[j] <- total
+    day[j] <- curr_time$mday
+    weekday[j] <- curr_time$wday
+    month[j] <- curr_time$mon
+    year[j] <- curr_time$year + 3900
+    sub_total[j] <- num_sub
+    cust_total[j] <- num_cust
+    sub_dur_total[j] <- sub_dur
+    cust_dur_total[j] <- cust_dur
+    duration_total[j] <- dur_total
+    date[j] <- as.Date.POSIXlt(curr_time, format = "%m/%d/%Y")
+
+    j <- j + 1
+
+    # Updating variables
+    total <- 0
+    curr_time <- next_row_time
+    num_cust <- 0
+    num_sub <- 0
+    dur_total <-0
+    sub_dur <- 0
+    cust_dur <- 0
+  }
+  else{
+    total <- total + 1
+    dur_total <- dur_total + SF_trips$Duration[i]
+    if(SF_trips$Subscriber.Type[i] == "Subscriber"){
+      num_sub <- num_sub + 1
+      sub_dur <- sub_dur + SF_trips$Duration[i]
+    }
+    else{
+      num_cust <- num_cust +1
+      cust_dur <- cust_dur + SF_trips$Duration[i]
+    }
+  }
+}
+
+#date is in numeric form with origin 3970-01-01
+#converting it to readable format
+PDT <- as.Date(date, origin = "3970-01-01")
+is_weekend <- ifelse(weekday == 0 | weekday == 6, 1, 0)
+SF_totals <- data.frame(PDT, day_total, sub_total, cust_total, duration_total, sub_dur_total, cust_dur_total,is_weekend, day, weekday, month, year)
 
 ```
 
@@ -151,9 +151,8 @@ par(mfrow = c(2,2))
 plot(weekday, sub_total, xlab = "Day of the week", ylab = "Number of rentals", main = "Subscribers", col = "skyblue")
 plot(weekday, cust_total, xlab = "Day of the week", ylab = "Number of rentals", main = "Customers", col = "slateblue4")
 plot(PDT, sub_total, col = ifelse(is_weekend == 1,"orange","steelblue"), xlab = "Year", ylab = "Number of rentals", main = "Subscribers")
-legend(x = as.Date("2016-04-01"), y = 500, c("Weekday", "Weekend"), col = c("steelblue", "orange"), pch = 1, cex = 0.6)
+legend(x = as.Date("2016-01-01"), y = 500, c("Weekday", "Weekend"), col = c("steelblue", "orange"), pch = 1, cex = 0.6)
 plot(PDT, cust_total, col = ifelse(is_weekend == 1,"orange", "steelblue"), xlab = "Year", ylab = "Number of rentals", main = "Customers")
-legend(x = as.Date("2016-04-01"), y = 500, c("Weekday", "Weekend"), col = c("steelblue", "orange"), pch = 1, cex = 0.6)
 # Subscribers are more active on weekdays with customers on weekends
 # Between late Dec through early Jan there is a decrease in Subscribers
 invisible(dev.off())
@@ -170,7 +169,7 @@ plot(PDT, day_total, type = 'l', col = "forestgreen", xlab = "Date", ylab = "Num
 plot(PDT, Mean.TemperatureF, type = 'l', col = "red", xlab = "Date", ylab = "Temperature in F", main = "Temperature each month ")
 lines(PDT, Max.TemperatureF, col = "orange")
 lines(PDT, Min.TemperatureF, col = "lightblue")
-legend(x = as.Date("2016-04-01"), y = 50, c("MaxTemp", "MeanTemp", "MinTemp"), col = c("orange", "red", "lightblue"), lty = c(1,1), cex = 0.5)
+legend(x = as.Date("2016-04-01"), y = 50, c("MaxTemp", "MeanTemp", "MinTemp"), col = c("orange", "red", "lightblue"), lty = c(1,1), cex = 0.25)
 # Decrease in temperature during winter time
 invisible(dev.off())
 
@@ -212,9 +211,8 @@ par(mfrow = c(2,2))
 plot(weekday, sub_dur_total/60, xlab = "Day of the week", ylab = "Duration in minutes", main = "Subscribers", col = "skyblue")
 plot(weekday[-96], cust_dur_total[-96]/60, xlab = "Day of the week", ylab = "Duration in minutes", main = "Customers", col = "slateblue4")
 plot(PDT, sub_dur_total/60, col = ifelse(is_weekend ==1,"orange", "steelblue"), xlab = "Month", ylab = "Duration in minutes", main = "Subscribers")
-legend(x = as.Date("2016-04-01"), y = 20000, c("Weekday", "Weekend"), col = c("steelblue", "orange"), pch = 1, cex = 0.6)
+legend(x = as.Date("2016-01-01"), y = 20000, c("Weekday", "Weekend"), col = c("steelblue", "orange"), pch = 1, cex = 0.6)
 plot(PDT[-96], cust_dur_total[-96]/60, col = ifelse(is_weekend == 1, "orange", "steelblue"), xlab = "Month", ylab = "Duration in minutes", main = "Customers")
-legend(x = as.Date("2016-04-01"), y = 27500, c("Weekday", "Weekend"), col = c("steelblue", "orange"), pch = 1, cex = 0.6)
 
 invisible(dev.off())
 ```
@@ -243,7 +241,7 @@ In addition, we also added categorical variables for specific events in San Fran
 plot(PDT, day_total, panel.first = lines(PDT, Giants_Game*1400, type = 'h', col = "beige"), 
       type = 'l', col = "lightblue", xlab = "Date", ylab = "Number of rentals", ylim = c(100,1400), 
       main = "Rentals each day")
-legend(as.Date("2016-06-01"), 400, c("Num Rentals", "Giants Game"), col = c("lightblue", "beige"), pch = '-', lwd = 3, cex = 0.6)
+legend(as.Date("2013-10-01"), 1400, c("Num Rentals", "Giants Game"), col = c("lightblue", "beige"), pch = '-', lwd = 3, cex = 0.6)
 
 ```
 
@@ -273,15 +271,15 @@ y2 <- c(30000,19242.95, 14332.68)
 y3 <- c(13669.94, 15617.69, 1123.544)
 par(mfrow = c(1,3), oma = c(0,0,2,0))
 plot(1:3, y1, xaxt = "n",  xlab = "Model Fitting Round", ylab = "MSE",
-     main = "Prediction Accuracy of Total Rentals", type = "l")
+     main = "MSE for Total Rentals", type = "l")
 axis(1, at = 1:3, labels = c("Round 1", "Round 2", "Round 3"))
 
 plot(1:3, y2, xaxt = "n",  xlab = "Model Fitting Round", ylab = "MSE", 
-     main = "Prediction Accuracy of Subscriber Rentals", type = "l")
+     main = "MSE for Subscriber Rentals", type = "l")
 axis(1, at = 1:3, labels = c("Round 1", "Round 2", "Round 3"))
 
 plot(1:3, y3, xaxt = "n", xlab = "Model Fitting Round", ylab = "MSE", 
-     main = "Prediction Accuracy of Customer Rentals", type = "l")
+     main = "MSE for Customer Rentals", type = "l")
 axis(1, at = 1:3, labels = c("Round 1", "Round 2", "Round 3"))
 
 mtext("Linear Regression Prediction Accuracy Over Three Rounds of Fitting", outer = TRUE, cex = 1)
@@ -305,15 +303,15 @@ y3 <- c(6565.271, 1092.988)
 
 par(mfrow = c(1,3), oma = c(0,0,2,0))
 plot(2:3, y1, xaxt = "n", xlab = "Model Fitting Round", ylab = "MSE",
-     main = "Prediction Accuracy of Total Rentals Per Day", type = "l")
+     main = "MSE of Total Rentals", type = "l")
 axis(1, at = 2:3, labels = c("W/O new features", "W/New Features"))
 
 plot(2:3, y2,xaxt = "n",  xlab = "Model Fitting Round", ylab = "MSE", 
-     main = "Prediction Accuracy of Subscriber Rentals Per Day", type = "l")
+     main = "MSE of Subscriber Rentals", type = "l")
 axis(1, at = 2:3, labels = c("W/O new features", "W/New Features"))
 
 plot(2:3, y3,xaxt = "n",  xlab = "Model Fitting Round", ylab = "MSE", 
-     main = "Prediction Accuracy of Customer Rentals Per Day", type = "l")
+     main = "MSE of Customer Rentals", type = "l")
 axis(1, at = 2:3, labels = c("W/O new features", "W/New Features"))
 
 mtext("K-Fold CV Prediction Accuracy Over Three Rounds of Fitting", outer = TRUE, cex = 1)
